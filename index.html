@@ -11,6 +11,10 @@
 	<link rel="stylesheet" href="./assets/style.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 </head>
+        <div class="admin-banner admin-only">
+         <i class="fa-regular fa-pen-to-square"></i>
+        <p>Mode édition</p>
+       </div>
 <body>
 <header>
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
@@ -18,7 +22,7 @@
 		<ul>
 			<li>projets</li>
 			<li>contact</li>
-			<li>login<a href="login.html">login</a></li>
+			<li>login<a href="login.html" id="login-link">login</a></li>
 			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
 	</nav>
@@ -36,12 +40,12 @@
 		</article>
 	</section>
 	<section id="portfolio">
-	  <div class="portfolio-header">
-       <h2>Mes Projets</h2>
-          <a href="#modal1" class="js-modal" id="modifier">
-        <i class="fa-regular fa-pen-to-square"></i> modifier
-          </a>
-       </div>
+    <div class="portfolio-header">
+        <h2>Mes Projets</h2>
+        <a href="#modal1" class="js-modal admin-only" id="modifier">
+            <i class="fa-regular fa-pen-to-square"></i> modifier
+        </a>
+    </div>
      <aside id="modal1" class="modal" style="display:none;">
     <div class="modal-wrapper">
         <i class="fa-solid fa-xmark js-modal-close"></i>
