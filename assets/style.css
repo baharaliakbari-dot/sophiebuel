@@ -315,13 +315,20 @@ modal-gallery figure {
     display: block;
 }
 .btn-validate {
-    width: 237px; /
-    height: 36px;
+  display: block;
+    width: 237px;  
+    height: 36px;    
     margin: 20px auto; 
-    border-radius: 60px;
     border: none;
+    border-radius: 60px; 
+    background-color: #A7A7A7; 
+    color: white;
     font-family: 'Syne';
     font-weight: 700;
+    cursor: not-allowed;
+}
+#btn-validate.active {
+    background-color: #1D6154;
     cursor: pointer;
 }
 .modal-item img {
