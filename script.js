@@ -84,16 +84,18 @@ function checkLogin() {
     }
 }
 // 5. Gérer la MODALE
+// 5. Gérer la MODALE
 function manageModal() {
     const modal = document.querySelector('#modal1');
-    const openBtn = document.querySelector('.js-modal-trigger'); 
+    // On cherche l'ID "modifier" que tu as mis dans ton HTML
+    const openBtn = document.querySelector('#modifier'); 
     const closeBtn = document.querySelector('.js-modal-close');
 
     if (openBtn && modal) {
         openBtn.addEventListener('click', (e) => {
             e.preventDefault();
             modal.style.display = 'flex';
-            displayModalWorks(); 
+            displayModalWorks(); // Charge les photos + poubelles
         });
     }
 
@@ -103,6 +105,7 @@ function manageModal() {
         });
     }
 
+    // Fermer en cliquant à côté
     window.addEventListener('click', (e) => {
         if (e.target === modal) modal.style.display = 'none';
     });
@@ -129,5 +132,68 @@ async function displayModalWorks() {
 
 // LANCEMENT
 displayWorks();
+displayFilters(); 
 checkLogin();
 manageModal();
+
+async function displayFilters() {
+    const categories = await fetch("http://localhost:5678/api/categories").then(res => res.json());
+    const filtersContainer = document.querySelector(".filters");
+    if (!filtersContainer) return;
+
+    filtersContainer.innerHTML = "";
+
+    const btnAll = document.createElement("button");
+    btnAll.textContent = "Tous";
+    btnAll.classList.add("filter-active"); 
+    btnAll.addEventListener("click", () => displayWorks());
+    filtersContainer.appendChild(btnAll);
+
+    categories.forEach(category => {
+        const btn = document.createElement("button");
+        btn.textContent = category.name;
+        btn.addEventListener("click", () => displayWorks(category.id));
+        filtersContainer.appendChild(btn);
+    });
+}
+const btnAddPhoto = document.getElementById('btn-add-photo');
+const btnBack = document.querySelector('.js-modal-back');
+const galleryView = document.getElementById('modal-gallery-view');
+const addView = document.getElementById('modal-add-view');
+
+// Aller vers le formulaire d'ajout
+if (btnAddPhoto) {
+    btnAddPhoto.addEventListener('click', () => {
+        galleryView.style.display = 'none';
+        addView.style.display = 'block';
+        // ON AFFICHE LA FLÈCHE ICI
+        btnBack.style.visibility = 'visible'; 
+    });
+}
+
+// Revenir à la galerie
+if (btnBack) {
+    btnBack.addEventListener('click', () => {
+        addView.style.display = 'none';
+        galleryView.style.display = 'block';
+        // ON CACHE LA FLÈCHE ICI
+        btnBack.style.visibility = 'hidden';
+    });
+}
+const inputFile = document.getElementById('file');
+const previewImage = document.getElementById('image-preview');
+const dropZoneContent = document.querySelectorAll('.drop-zone i, .drop-zone label, .drop-zone p');
+
+inputFile.addEventListener('change', () => {
+    const file = inputFile.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewImage.src = e.target.result;
+            previewImage.style.display = 'block';
+            // Cacher les icônes et le texte
+            dropZoneContent.forEach(el => el.style.display = 'none');
+        };
+        reader.readAsDataURL(file);
+    }
+});
