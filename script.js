@@ -54,23 +54,35 @@ async function displayFilters() {
 
 // --- 3. GESTION LOGIN / ADMIN ---
 function checkLogin() {
-    const adminElements = document.querySelectorAll(".admin-only");
     const loginLink = document.querySelector("#login-link");
+    const adminBar = document.querySelector(".admin-bar"); // Ta barre noire
+    const filters = document.querySelector(".filters");
+    const editButtons = document.querySelectorAll(".admin-only, #modifier"); 
+    
+    // On récupère le token au moment où on appelle la fonction
+    const currentToken = localStorage.getItem('token');
 
-    if (token) {
-        adminElements.forEach(el => el.style.display = "flex");
-        if (filtersContainer) filtersContainer.style.display = "none";
-        if (loginLink) {
-            loginLink.textContent = "logout";
-            loginLink.addEventListener("click", (e) => {
-                e.preventDefault();
-                localStorage.removeItem("token");
-                window.location.href = "index.html";
-            });
-        }
+    if (currentToken) {
+        // --- MODE CONNECTÉ ---
+        if (loginLink) loginLink.textContent = "logout";
+        if (adminBar) adminBar.style.display = "flex";
+        if (filters) filters.style.display = "none";
+        editButtons.forEach(el => el.style.display = "flex");
+
+        // Action au clic sur logout
+        loginLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            localStorage.removeItem("token"); // On vide le badge
+            window.location.reload(); // On recharge : le script va se relancer, ne pas trouver de token, et tout cacher
+        });
+    } else {
+        // --- MODE VISITEUR ---
+        if (loginLink) loginLink.textContent = "login";
+        if (adminBar) adminBar.style.display = "none";
+        if (filters) filters.style.display = "flex";
+        editButtons.forEach(el => el.style.display = "none");
     }
 }
-
 // --- 4. GESTION DE LA MODALE ---
 function manageModal() {
     const modal = document.querySelector('#modal1');
