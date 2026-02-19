@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Sophie Bluel - Login</title>
-    <link rel="stylesheet" href="./assets/style.css"> </head>
+    <link rel="stylesheet" href="./assets/style.css">
+</head>
 <body>
     <header>
         <h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
@@ -16,20 +17,26 @@
             </ul>
         </nav>
     </header>
-    <main id="login-main-container"> <h2>Log In</h2>
-    <form id="login-form">
-        <div class="input-wrapper">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email">
-        </div>
-        <div class="input-wrapper">
-            <label for="password">Mot de passe</label>
-            <input type="password" id="password" name="password">
-        </div>
-        <input type="submit" value="Se connecter" id="btn-login">
-        <a href="#" class="forgot-pass">Mot de passe oublié</a>
-    </form>
-</main>
-      <script src="login.js"></script>
+
+    <main id="login-container">
+        <h2>Log In</h2>
+        <form id="login-form">
+            <div class="input-wrapper">
+                <label for="email">E-mail</label>
+                <input type="email" name="email" id="email" required>
+            </div>
+            <div class="input-wrapper">
+                <label for="password">Mot de passe</label>
+                <input type="password" name="password" id="password" required>
+            </div>
+            
+            <p id="error-message"></p> 
+
+            <input type="submit" value="Se connecter" id="btn-login">
+            <a href="#" class="forgot-pass">Mot de passe oublié</a>
+        </form>
+    </main>
+
+    <script src="login.js"></script>
 </body>
 </html>

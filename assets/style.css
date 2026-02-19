@@ -344,13 +344,25 @@ login-form input {
     color: #1D6154; 
     border: 1px solid #1D6154;
     border-radius: 60px; 
-    padding: 5px 5px;
+    padding: 10px 20px;
     font-family: 'Syne';
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s;
 }
+.filters button:hover {
+    background-color: #1D6154;
+    color: white;
+}
+.filters button.filter-active {
+    background-color: #1D6154 !important;
+    color: white !important;
+}
 .filters button.active, .filters button:hover {
+    background-color: #1D6154;
+    color: white;
+}
+filters button.filter-active {
     background-color: #1D6154;
     color: white;
 }
@@ -441,7 +453,7 @@ modal-gallery figure {
     margin: 20px auto; 
     display: block;
 }
-.btn-validate {
+#btn-validate {
   display: block;
     width: 237px;  
     height: 36px;    
@@ -632,4 +644,13 @@ footer nav ul {
 	display: flex;
 	justify-content: flex-end;
 	margin: 2em
+}
+#error-message {
+    font-family: 'Work Sans';
+    font-size: 14px;
+    font-weight: bold;
+    color: red;
+    text-align: center;
+    margin-bottom: 15px;
+    min-height: 18px; 
 }

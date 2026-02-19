@@ -33,90 +33,99 @@ async function displayWorks(filterId = null) {
     });
 }
 
+// --- 3. FILTRES ---
 async function displayFilters() {
     const categories = await getCategories();
-    if (!filtersContainer || token) return; // Cache les filtres si admin (token présent)
+    if (!filtersContainer || token) {
+        if (filtersContainer) filtersContainer.style.display = "none";
+        return;
+    } 
 
     filtersContainer.innerHTML = "";
     const btnAll = document.createElement("button");
     btnAll.textContent = "Tous";
     btnAll.classList.add("filter-active"); 
-    btnAll.addEventListener("click", () => displayWorks());
+    btnAll.addEventListener("click", () => {
+        displayWorks();
+        updateActiveFilter(btnAll);
+    });
     filtersContainer.appendChild(btnAll);
 
     categories.forEach(category => {
         const btn = document.createElement("button");
         btn.textContent = category.name;
-        btn.addEventListener("click", () => displayWorks(category.id));
+        btn.addEventListener("click", () => {
+            displayWorks(category.id);
+            updateActiveFilter(btn);
+        });
         filtersContainer.appendChild(btn);
     });
 }
 
-// --- 3. GESTION LOGIN / ADMIN ---
+function updateActiveFilter(clickedButton) {
+    const allButtons = document.querySelectorAll('.filters button');
+    allButtons.forEach(btn => btn.classList.remove('filter-active'));
+    clickedButton.classList.add('filter-active');
+}
+
+// --- 4. GESTION LOGIN / LOGOUT (CORRIGÉ) ---
 function checkLogin() {
     const loginLink = document.querySelector("#login-link");
-    const adminBar = document.querySelector(".admin-bar"); // Ta barre noire
-    const filters = document.querySelector(".filters");
-    const editButtons = document.querySelectorAll(".admin-only, #modifier"); 
+    const adminBar = document.querySelector(".admin-banner"); 
+    const editButtons = document.querySelectorAll(".admin-only"); 
     
-    // On récupère le token au moment où on appelle la fonction
-    const currentToken = localStorage.getItem('token');
-
-    if (currentToken) {
-        // --- MODE CONNECTÉ ---
-        if (loginLink) loginLink.textContent = "logout";
+    if (token) {
+        // Mode ADMIN
+        if (loginLink) {
+            loginLink.textContent = "logout";
+            loginLink.addEventListener("click", (e) => {
+                e.preventDefault();
+                localStorage.removeItem("token"); // On vide le badge
+                window.location.href = "index.html"; // On force le retour à l'état visiteur
+            });
+        }
         if (adminBar) adminBar.style.display = "flex";
-        if (filters) filters.style.display = "none";
         editButtons.forEach(el => el.style.display = "flex");
-
-        // Action au clic sur logout
-        loginLink.addEventListener("click", (e) => {
-            e.preventDefault();
-            localStorage.removeItem("token"); // On vide le badge
-            window.location.reload(); // On recharge : le script va se relancer, ne pas trouver de token, et tout cacher
-        });
     } else {
-        // --- MODE VISITEUR ---
-        if (loginLink) loginLink.textContent = "login";
+        // Mode VISITEUR (On s'assure que tout est caché)
         if (adminBar) adminBar.style.display = "none";
-        if (filters) filters.style.display = "flex";
         editButtons.forEach(el => el.style.display = "none");
     }
 }
-// --- 4. GESTION DE LA MODALE ---
+
+// --- 5. GESTION DE LA MODALE (CORRIGÉ POUR LA CONSOLE) ---
 function manageModal() {
     const modal = document.querySelector('#modal1');
     const openBtn = document.querySelector('#modifier'); 
-    const closeBtn = document.querySelector('.js-modal-close');
+    const closeBtns = document.querySelectorAll('.js-modal-close');
     const btnAddPhoto = document.getElementById('btn-add-photo');
     const btnBack = document.querySelector('.js-modal-back');
     const galleryView = document.getElementById('modal-gallery-view');
     const addView = document.getElementById('modal-add-view');
 
-    // Quand tu OUUVRES la modale
-openBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    modal.style.display = 'flex';
-    modal.setAttribute('aria-hidden', 'false'); // On dit aux lecteurs d'écran : "C'est visible"
-    displayModalWorks();
-});
+    if (!openBtn || !modal) return;
 
-// Quand tu FERMES la modale
-const closeModal = () => {
-    modal.style.display = 'none';
-    modal.setAttribute('aria-hidden', 'true'); // On dit aux lecteurs d'écran : "C'est caché"
-    resetForm();
-};
+    openBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        modal.style.display = 'flex';
+        modal.removeAttribute('aria-hidden'); // Supprime l'erreur ARIA
+        displayModalWorks();
+    });
 
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    const closeModal = () => {
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden', 'true'); // Remet l'état caché
+        resetForm();
+    };
+
+    closeBtns.forEach(btn => btn.addEventListener('click', closeModal));
     window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-    // Navigation interne modale
     if (btnAddPhoto) {
         btnAddPhoto.addEventListener('click', () => {
             galleryView.style.display = 'none';
             addView.style.display = 'block';
-            btnBack.style.visibility = 'visible';
+            if (btnBack) btnBack.style.visibility = 'visible';
             fillModalCategories();
         });
     }
@@ -130,7 +139,7 @@ const closeModal = () => {
     }
 }
 
-// --- 5. ACTIONS MODALE (SUPPRESSION / AJOUT) ---
+// --- 6. ACTIONS MODALE (SUPPRESSION) ---
 async function displayModalWorks() {
     const modalGallery = document.querySelector('.modal-gallery'); 
     if (!modalGallery) return; 
@@ -147,7 +156,6 @@ async function displayModalWorks() {
         modalGallery.appendChild(figure);
     });
 
-    // Supprimer une photo
     document.querySelectorAll('.fa-trash-can').forEach(trash => {
         trash.addEventListener('click', async (e) => {
             const id = e.target.dataset.id;
@@ -163,6 +171,7 @@ async function displayModalWorks() {
     });
 }
 
+// --- 7. FORMULAIRE D'AJOUT PHOTO ---
 async function fillModalCategories() {
     const select = document.getElementById('category');
     if (!select || select.options.length > 1) return;
@@ -176,12 +185,29 @@ async function fillModalCategories() {
     });
 }
 
-// --- 6. FORMULAIRE D'AJOUT ET PREVIEW ---
 const inputFile = document.getElementById('file');
 const previewImage = document.getElementById('image-preview');
 const dropZoneContent = document.querySelectorAll('.drop-zone i, .drop-zone label, .drop-zone p');
 const formAdd = document.getElementById('form-add-photo');
-const btnValidate = document.getElementById('btn-validate');
+
+function checkForm() {
+    const title = document.getElementById('title').value.trim();
+    const category = document.getElementById('category').value;
+    const file = document.getElementById('file').files[0];
+    const btn = document.getElementById('btn-validate');
+
+    if (btn) {
+        if (title !== "" && category !== "" && file !== undefined) {
+            btn.disabled = false;
+            btn.style.cursor = "pointer";
+            btn.style.backgroundColor = "#1D6154";
+        } else {
+            btn.disabled = true;
+            btn.style.cursor = "not-allowed";
+            btn.style.backgroundColor = "#A7A7A7";
+        }
+    }
+}
 
 if (inputFile) {
     inputFile.addEventListener('change', () => {
@@ -197,24 +223,6 @@ if (inputFile) {
         }
         checkForm();
     });
-}
-
-function checkForm() {
-    const title = document.getElementById('title').value;
-    const category = document.getElementById('category').value;
-    const file = document.getElementById('file').files[0];
-    const btnValidate = document.getElementById('btn-validate');
-
-    // Debug pour toi : regarde ta console F12
-    console.log("Check -> Titre:", title, "| Catégorie:", category, "| Photo:", file ? "OK" : "Manquante");
-
-    if (title.trim() !== "" && category !== "" && file !== undefined) {
-        btnValidate.style.backgroundColor = "#1D6154"; // Vert
-        btnValidate.disabled = false;
-    } else {
-        btnValidate.style.backgroundColor = "#A7A7A7"; // Gris
-        btnValidate.disabled = true;
-    }
 }
 
 if (formAdd) {
@@ -234,14 +242,18 @@ if (formAdd) {
 
         if (response.ok) {
             displayWorks();
-            document.querySelector('.js-modal-close').click(); // Ferme la modale
+            document.querySelector('.js-modal-close').click();
+            resetForm(); // On nettoie le formulaire après succès
         }
     });
 }
 
 function resetForm() {
     if (formAdd) formAdd.reset();
-    previewImage.style.display = 'none';
+    if (previewImage) {
+        previewImage.style.display = 'none';
+        previewImage.src = "";
+    }
     dropZoneContent.forEach(el => el.style.display = 'block');
     checkForm();
 }
@@ -251,19 +263,3 @@ displayWorks();
 displayFilters(); 
 checkLogin();
 manageModal();
-function checkForm() {
-    const title = document.getElementById('title').value.trim();
-    const category = document.getElementById('category').value;
-    const file = document.getElementById('file').files[0];
-    const btn = document.getElementById('btn-validate');
-
-    console.log("Titre:", title, "Cat:", category, "Photo:", file);
-
-    if (title !== "" && category !== "" && file !== undefined) {
-        btn.classList.add('active');
-        btn.disabled = false;        
-    } else {
-        btn.classList.remove('active');
-        btn.disabled = true;
-    }
-}
