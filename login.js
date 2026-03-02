@@ -4,7 +4,6 @@ const errorMessage = document.getElementById('error-message');
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // On force le vidage de toute alerte précédente
     errorMessage.textContent = "";
 
     const email = document.getElementById('email').value;
@@ -21,7 +20,6 @@ loginForm.addEventListener('submit', async (e) => {
         localStorage.setItem("token", data.token);
         window.location.href = "index.html";
     } else {
-        // ON ÉCRIT ICI, SUR LA PAGE
         errorMessage.textContent = "Erreur dans l'identifiant ou le mot de passe";
         errorMessage.style.color = "red";
         errorMessage.style.fontWeight = "bold";

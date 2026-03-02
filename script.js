@@ -68,7 +68,7 @@ function updateActiveFilter(clickedButton) {
     clickedButton.classList.add('filter-active');
 }
 
-// --- 4. GESTION LOGIN / LOGOUT (CORRIGÉ) ---
+// --- 4. GESTION LOGIN / LOGOUT  ---
 function checkLogin() {
     const loginLink = document.querySelector("#login-link");
     const adminBar = document.querySelector(".admin-banner"); 
@@ -80,20 +80,19 @@ function checkLogin() {
             loginLink.textContent = "logout";
             loginLink.addEventListener("click", (e) => {
                 e.preventDefault();
-                localStorage.removeItem("token"); // On vide le badge
-                window.location.href = "index.html"; // On force le retour à l'état visiteur
+                localStorage.removeItem("token"); 
+                window.location.href = "index.html"; 
             });
         }
         if (adminBar) adminBar.style.display = "flex";
         editButtons.forEach(el => el.style.display = "flex");
     } else {
-        // Mode VISITEUR (On s'assure que tout est caché)
         if (adminBar) adminBar.style.display = "none";
         editButtons.forEach(el => el.style.display = "none");
     }
 }
 
-// --- 5. GESTION DE LA MODALE (CORRIGÉ POUR LA CONSOLE) ---
+// --- 5. GESTION DE LA MODALE  ---
 function manageModal() {
     const modal = document.querySelector('#modal1');
     const openBtn = document.querySelector('#modifier'); 
@@ -108,13 +107,13 @@ function manageModal() {
     openBtn.addEventListener('click', (e) => {
         e.preventDefault();
         modal.style.display = 'flex';
-        modal.removeAttribute('aria-hidden'); // Supprime l'erreur ARIA
+        modal.removeAttribute('aria-hidden'); 
         displayModalWorks();
     });
 
     const closeModal = () => {
         modal.style.display = 'none';
-        modal.setAttribute('aria-hidden', 'true'); // Remet l'état caché
+        modal.setAttribute('aria-hidden', 'true'); 
         resetForm();
     };
 
@@ -243,7 +242,7 @@ if (formAdd) {
         if (response.ok) {
             displayWorks();
             document.querySelector('.js-modal-close').click();
-            resetForm(); // On nettoie le formulaire après succès
+            resetForm(); 
         }
     });
 }

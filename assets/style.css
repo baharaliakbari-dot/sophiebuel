@@ -354,10 +354,7 @@ login-form input {
     background-color: #1D6154;
     color: white;
 }
-.filters button.filter-active {
-    background-color: #1D6154 !important;
-    color: white !important;
-}
+
 .filters button.active, .filters button:hover {
     background-color: #1D6154;
     color: white;
@@ -477,9 +474,9 @@ modal-gallery figure {
 }
 .modal-wrapper {
     background-color: #FFFFFF !important;
-    width: 630px; 
-    min-height: 400px;
-    padding: 60px 30px; 
+    width:420px; 
+    min-height: 250px;
+    padding: 45px 40px 30px 40px; 
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -590,7 +587,8 @@ btn-main {
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
 	grid-column-gap: 10px;
-	grid-row-gap: 20px;
+	grid-row-gap: 50px;
+    gap: 30px;
 }
 
 .gallery img {
